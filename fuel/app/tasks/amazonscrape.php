@@ -76,7 +76,7 @@ class Amazonscrape
 
         do{
             $page = $page + 1;
-            $url =$baseurl->brandurl.'&page='.$page;
+            $url =$baseurl->brand_url.'&page='.$page;
             $asinlist = null;
 
             exec("casperjs ".APPPATH."getItemList.js '".$url."'", $resultlist);
@@ -150,7 +150,7 @@ class Amazonscrape
 
         $query = \DB::update('brand')
             ->value('check_date', date("Y-m-d H:i:s"))
-            ->where('brandurl', '=', $baseurl->brandurl)->execute();
+            ->where('brand_url', '=', $baseurl->brand_url)->execute();
 
     }
 
