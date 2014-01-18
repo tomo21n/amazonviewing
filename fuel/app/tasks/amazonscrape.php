@@ -28,7 +28,7 @@ class Amazonscrape
             $indexField = 'a';
         }
 
-        exec('casperjs ".APPPATH."getBrandList.js '.$merchantid." ". $indexField, $retval);
+        exec('casperjs '.APPPATH.'getBrandList.js '.$merchantid." ". $indexField, $retval);
 
         if($retval){
             foreach($retval as $url){
