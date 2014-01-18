@@ -4,7 +4,7 @@ var casper = require('casper').create();
 var url = casper.cli.get(0);
 
 function getLinks() {
-    var links = document.querySelectorAll('div.celwidget');
+    var links = document.querySelectorAll('div.prod.celwidget');
     return Array.prototype.map.call(links, function(e) {
         return e.getAttribute('name')                                                //ASIN
             + ':::::' + e.querySelector(' h3 span.lrg').innerHTML                    //Name
