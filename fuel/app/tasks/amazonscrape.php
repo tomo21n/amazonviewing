@@ -39,7 +39,7 @@ class Amazonscrape
                     $m_brand = \Model_Brand::forge(array(
                         'merchant_id' => $merchantid,
                         'alphabet' => $indexField,
-                        'brandurl' => $baseurl,
+                        'brand_url' => $baseurl,
                     ));
 
                     if ($m_brand and $m_brand->save())
@@ -79,46 +79,19 @@ class Amazonscrape
             $url =$baseurl->brandurl.'&page='.$page;
             $asinlist = null;
 
-            exec("casperjs ".APPPATH."getItemList.js '".$url."'", $asinlist);
+            exec("casperjs ".APPPATH."getItemList.js '".$url."'", $resultlist);
 
             $maxpage = 1;
+            $firstline = true;
 
-            if($asinlist){
-                foreach($asinlist as $asin){
+            if($resultlist){
+                foreach($resultlist as $item){
 
-                    if(mb_strlen($asin) === 10 ){
-                        try{
-                            $m_asin = \Model_Asin::forge(array(
-                                'merchant_id' => $baseurl->merchant_id,
-                                'brandurl' =>$url,
-                                'asin' => $asin,
-                                'price' => '0',
-                                'search_index' => '0',
-                            ));
-
-                            if ($m_asin and $m_asin->save())
-                            {
-                                \Log::DEBUG('DB SUCCESS getAsin ASIN:'.$asin);
-
-                            }
-                            else
-                            {
-                                \Log::ERROR('DB ERROR getAsin ASIN:'.$asin);
-                            }
-
-                        }catch (\Database_Exception $e){
-
-                            \Log::ERROR('DB EXCEPTION getAsin ASIN:'.$asin.' DETAIL:'.$e);
-
-                        }
-
-
-                    }elseif(strstr($asin, "Showing"))
+                    if($firstline)
                     {
+                        if(preg_match("/^Showing [0-9]+ - [0-9]+ of [0-9]+ Results$/",$item)){
 
-                        if(preg_match("/^Showing [0-9]+ - [0-9]+ of [0-9]+ Results$/",$asin)){
-
-                            if(preg_match("/of [0-9]+ Results$/",$asin,$match)){
+                            if(preg_match("/of [0-9]+ Results$/",$item,$match)){
 
                                 $replaceText = str_replace("of ", "", $match);
                                 $resultcount = str_replace(" Results", "", $replaceText);
@@ -135,8 +108,39 @@ class Amazonscrape
                             $maxpage = 1;
                         }
 
-                    }
+                        $firstline = false;
 
+                    }else{
+                        $itemarray = explode(":::::", $item);
+
+                        if(mb_strlen($itemarray[0]) === 10 ){
+                            try{
+                                $m_asin = \Model_Asin::forge(array(
+                                    'merchant_id'  => $baseurl->merchant_id,
+                                    'brand_url'    => $url,
+                                    'asin'         => $itemarray[0],
+                                    'product_name' => $itemarray[1],
+                                    'image_url'    => $itemarray[2],
+                                    'price'        => $itemarray[3],
+                                ));
+
+                                if ($m_asin and $m_asin->save())
+                                {
+                                    \Log::DEBUG('DB SUCCESS getAsin ASIN:'.$itemarray[0]);
+
+                                }
+                                else
+                                {
+                                    \Log::ERROR('DB ERROR getAsin ASIN:'.$itemarray[0]);
+                                }
+
+                            }catch (\Database_Exception $e){
+
+                                \Log::ERROR('DB EXCEPTION getAsin ASIN:'.$itemarray[0].' DETAIL:'.$e);
+
+                            }
+                        }
+                    }
                 }
 
             }

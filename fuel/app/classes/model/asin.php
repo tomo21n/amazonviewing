@@ -8,10 +8,11 @@ class Model_Asin extends \Orm\Model
 
 	protected static $_properties = array(
         'merchant_id',
-        'brandurl',
+        'brand_url',
         'asin',
+        'product_name',
+        'image_url',
         'price',
-        'search_index',
         'created_at',
         'updated_at',
 	);

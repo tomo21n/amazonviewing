@@ -6,7 +6,10 @@ var url = casper.cli.get(0);
 function getLinks() {
     var links = document.querySelectorAll('div.celwidget');
     return Array.prototype.map.call(links, function(e) {
-        return e.getAttribute('name');
+        return e.getAttribute('name')                                                //ASIN
+            + ':::::' + e.querySelector(' h3 span.lrg').innerHTML                    //Name
+            + ':::::' + e.querySelector('img').getAttribute('src')                   //Image
+            + ':::::' + e.querySelector('span.bld').innerHTML.replace(/^\s+\$/, ""); //Price $マーク削除
     });
 }
 function getResultCount() {
@@ -29,6 +32,8 @@ casper.then(function() {
 
 casper.run(function() {
     this.echo(resultCount);
-    this.echo(links.join('\n'));
+    for ( var i = 0; i < links.length; ++i ) {
+        this.echo(links[i]);
+    }
     this.exit();
 });

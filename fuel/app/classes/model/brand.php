@@ -9,7 +9,7 @@ class Model_Brand extends \Orm\Model
 	protected static $_properties = array(
         'merchant_id',
         'alphabet',
-        'brandurl',
+        'brand_url',
         'check_date',
         'created_at',
         'updated_at',
