@@ -115,6 +115,9 @@ class Amazonscrape
 
                         if(mb_strlen($itemarray[0]) === 10 ){
                             try{
+
+                                //TODO:INSERT前にSelectで確認する。
+
                                 $m_asin = \Model_Asin::forge(array(
                                     'merchant_id'  => $baseurl->merchant_id,
                                     'brand_url'    => $url,
