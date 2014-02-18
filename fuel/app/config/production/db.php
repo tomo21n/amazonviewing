@@ -6,9 +6,9 @@
 return array(
 	'default' => array(
 		'connection'  => array(
-			'dsn'        => 'mysql:host=localhost;dbname=fuel_prod',
-			'username'   => 'fuel_app',
-			'password'   => 'super_secret_password',
+            'dsn'        => 'mysql:host=worldviewinstance.cxhcuepwy9ai.ap-northeast-1.rds.amazonaws.com;dbname=prod_amazonviewing',
+            'username'   => 'worldviewing',
+            'password'   => 'toporonj',
 		),
 	),
 );
