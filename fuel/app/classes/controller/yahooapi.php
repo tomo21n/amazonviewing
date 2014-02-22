@@ -2,7 +2,7 @@
 class Controller_Yahooapi extends Controller_Rest
 {
 
-    public function get_myCloseList()
+    public function post_myCloseList()
     {
 
         $errormsg = null;
@@ -97,4 +97,36 @@ class Controller_Yahooapi extends Controller_Rest
         }
     }
 
+    public function post_logintest(){
+        $errormsg = null;
+
+        if (Input::method() == 'POST') {
+
+            if ($user = Auth::validate_user(Input::post('email'), Input::post('password')))
+            {
+
+                if ( Auth::member(1) )
+                {
+                    //禁止ユーザ
+                    $username = false;
+                    $errormsg = 'アカウントがロックされています';
+                }else{
+                    $username = $user->username;
+                }
+            }
+            else
+            {
+                $username = false;
+                $errormsg = 'ID,パスワードが一致しません';
+
+            }
+            $open_id = Input::post('open_id');
+
+            if(is_null($errormsg)){
+                return array('username'=> $username);
+            }else{
+                return array('Error'=> $errormsg);
+            }
+        }
+    }
 }
