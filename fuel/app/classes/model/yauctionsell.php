@@ -11,7 +11,7 @@ class Model_Yauctionsell extends \Orm\Model
 		'title',
 		'highest_price',
 		'winner_id',
-		'item_list_url',
+		'winner_contact_url',
 		'message_title',
 		'end_time',
 		'auction_item_url',

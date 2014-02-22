@@ -275,6 +275,101 @@ class Yauction{
         }
     }
 
+
+
+    public function myCloseList(){
+
+        $url = 'https://auctions.yahooapis.jp/AuctionWebService/V2/myCloseList';
+        $curl = \Request::forge($url, 'curl');
+        $param['start'] = '1';
+        $param['output'] = 'php';
+        try{
+            $curl->set_params($param);
+            $curl->set_header('Authorization', 'Bearer '.$this->access_token);
+            $curl->execute();
+            $response = $curl->response();
+
+            $result = unserialize($response->body);
+            if($result['ResultSet']['totalResultsReturned'] > 0){
+
+                foreach($result['ResultSet']['Result'] as $item){
+                    $dbitem = Model_Yauctionsell::find('first', array(
+                        'where' => array(
+                            array('open_id', $this->open_id),
+                            array('auction_id', $item['AuctionID']),
+                        ),
+                    ));
+
+                    if(count($dbitem) > 0){
+                        $dbitem->auction_id        = $item['AuctionID'];
+                        $dbitem->title             = $item['Title'];
+                        $dbitem->highest_price      = $item['HighestPrice'];
+                        $dbitem->winner_id          = $item['Winner']['Id'];
+                        $dbitem->winner_contact_url = $item['Winner']['ContactUrl'];
+                        $dbitem->message_title      = $item['Message']['Title'];
+                        $dbitem->end_time           = $item['EndTime'];
+                        $dbitem->auction_item_url    = $item['AuctionItemUrl'];
+                        $dbitem->image_url          = $item['Image']['Url'];
+
+                        if ($dbitem->save())
+                        {
+                            return true;
+                        }
+
+                        else
+                        {
+
+                            return false;
+
+                        }
+
+                    }else{
+                        $yauctionsell = Model_Yauctionsell::forge(array(
+                            'user_id' => $this->user_id,
+                            'open_id' => $this->open_id,
+                            'auction_id' => $item['AuctionID'],
+                            'title' => $item['Title'],
+                            'highest_price' => $item['HighestPrice'],
+                            'winner_id' => $item['Winner']['Id'],
+                            'winner_contact_url' => $item['Winner']['ContactUrl'],
+                            'message_title' => $item['Message']['Title'],
+                            'end_time' => $item['EndTime'],
+                            'auction_item_url' => $item['AuctionItemUrl'],
+                            'image_url' => $item['Image']['Url'],
+                        ));
+
+
+                        if ($yauctionsell and $yauctionsell->save()) {
+
+                            return true;
+
+                        } else {
+
+                            return false;
+                        }
+                    }
+
+                }
+
+                return true;
+
+            }else{
+
+                return false;
+            }
+
+        }catch (\Fuel\Core\HttpNotFoundException $e){
+            if(self::invalidToken($e->getMessage())){
+                return 'Invalid Token';
+            }else if(self::invalidRequest($e->getMessage())){
+                return 'Invalid Request';
+            }else{
+                return 'Other Error';
+            }
+
+        }
+    }
+
     public function refreshToken(){
         // クレデンシャルインスタンス生成
         $cred = new ClientCredential( $this->client_id, $this->client_secret );

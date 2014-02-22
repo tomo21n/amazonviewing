@@ -65,27 +65,26 @@ class Controller_User_Myauction extends Controller_User{
             $env = Model_Yauctiontoken::getAccessToken($open_id);
             $yauction->setTokenFromDb($env);
 
-            $result = $yauction->openWatchList();
+            $result = $yauction->myCloseList();
             if($result === 'Invalid Token'){
                 $yauction->refreshToken();
 
                 $env = Model_Yauctiontoken::getAccessToken($open_id);
                 $yauction->setTokenFromDb($env);
 
-                $result = $yauction->openWatchList();
+                $result = $yauction->myCloseList();
 
             }else if($result === 'Invalid Request'||$result === 'Other Error'){
                 Session::set_flash('error', e('Error :' . $result));
-                Response::redirect('user/myauction/');
+
+            }else if($result){
+                Session::set_flash('success', e('Updated myauction '));
 
             }
 
-            Session::set_flash('success', e('Updated myauction '));
             Response::redirect('user/myauction/');
 
         }
-
-
 
     }
 

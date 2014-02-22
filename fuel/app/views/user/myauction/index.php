@@ -37,11 +37,11 @@
 <?php foreach ($myauctions as $item): ?>		<tr>
 
             <td><?php echo Html::anchor($item->auction_item_url, $item->auction_id); ?></td>
-            <td><?php echo $item->image_url; ?></td>
+            <td><?php echo Html::img($item->image_url); ?></td>
             <td><?php echo $item->title; ?></td>
 			<td><?php echo $item->highest_price; ?></td>
-			<td><?php echo Html::anchor($item->item_list_url, $item->winner_id); ?></td>
-			<td><?php echo $item->message_title; ?></td>
+			<td><?php echo Html::anchor("http://openuser.auctions.yahoo.co.jp/jp/user/".$item->winner_id, $item->winner_id); ?></td>
+			<td><?php echo Html::anchor($item->winner_contact_url,$item->message_title); ?></td>
 			<td><?php echo $item->end_time; ?></td>
 			<td>
 				<?php //echo Html::anchor('user/inventory/view/'.$item->id, 'View'); ?>
