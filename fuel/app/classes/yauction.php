@@ -313,7 +313,7 @@ class Yauction{
 
                         if ($dbitem->save())
                         {
-                            return true;
+                            //return true;
                         }
 
                         else
@@ -341,7 +341,7 @@ class Yauction{
 
                         if ($yauctionsell and $yauctionsell->save()) {
 
-                            return true;
+                            //return true;
 
                         } else {
 
@@ -352,6 +352,105 @@ class Yauction{
                 }
 
                 return true;
+
+            }else{
+
+                return false;
+            }
+
+        }catch (\Fuel\Core\HttpNotFoundException $e){
+            if(self::invalidToken($e->getMessage())){
+                return 'Invalid Token';
+            }else if(self::invalidRequest($e->getMessage())){
+                return 'Invalid Request';
+            }else{
+                return 'Other Error';
+            }
+
+        }
+    }
+
+    public function myWonList(){
+
+        $url = 'https://auctions.yahooapis.jp/AuctionWebService/V2/myWonList';
+        $curl = \Request::forge($url, 'curl');
+        $param['start'] = '1';
+        $param['output'] = 'php';
+        try{
+            $curl->set_params($param);
+            $curl->set_header('Authorization', 'Bearer '.$this->access_token);
+            $curl->execute();
+            $response = $curl->response();
+
+            $result = unserialize($response->body);
+
+            //echo '<pre>';
+            //var_dump($result);
+            //echo '</pre>';
+
+            if($result['ResultSet']['totalResultsReturned'] > 0){
+
+                foreach($result['ResultSet']['Result'] as $item){
+                    $dbitem = Model_Yauctionwon::find('first', array(
+                        'where' => array(
+                            array('open_id', $this->open_id),
+                            array('auction_id', $item['AuctionID']),
+                        ),
+                    ));
+
+                    if(count($dbitem) > 0){
+                        $dbitem->auction_id        = $item['AuctionID'];
+                        $dbitem->title             = $item['Title'];
+                        $dbitem->won_price         = $item['WonPrice'];
+                        $dbitem->seller_id          = $item['Seller']['Id'];
+                        $dbitem->seller_contact_url = isset($item['ContactUrl'])? $item['ContactUrl']:'';
+                        $dbitem->message_title      = $item['Message']['Title'];
+                        $dbitem->end_time           = $item['EndTime'];
+                        $dbitem->auction_item_url    = $item['AuctionItemUrl'];
+                        $dbitem->image_url          = $item['Image']['Url'];
+
+                        if ($dbitem->save())
+                        {
+                            //return true;
+                        }
+
+                        else
+                        {
+
+                            return false;
+
+                        }
+
+                    }else{
+                        $yauctionwon = Model_Yauctionwon::forge(array(
+                            'user_id' => $this->user_id,
+                            'open_id' => $this->open_id,
+                            'auction_id' => $item['AuctionID'],
+                            'title' => $item['Title'],
+                            'won_price' => $item['WonPrice'],
+                            'seller_id' => $item['Seller']['Id'],
+                            'seller_contact_url' => isset($item['ContactUrl'])? $item['ContactUrl']:'',
+                            'message_title' => $item['Message']['Title'],
+                            'end_time' => $item['EndTime'],
+                            'auction_item_url' => $item['AuctionItemUrl'],
+                            'image_url' => $item['Image']['Url'],
+                        ));
+
+
+                        if ($yauctionwon and $yauctionwon->save()) {
+
+                            //return true;
+
+                        } else {
+
+                            return false;
+                        }
+                    }
+
+                }
+
+                return true;
+
 
             }else{
 
