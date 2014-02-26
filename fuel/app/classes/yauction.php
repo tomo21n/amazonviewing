@@ -51,13 +51,14 @@ class Yauction{
 
     public function setTokenFromDb($env){
 
-        $this->access_token = $env->access_token;
-        $this->refresh_token = $env->refresh_token;
-        $this->expiration = $env->expiration;
-        $this->open_id = $env->open_id;
-        $this->user_id = $env->user_id;
-        $this->updated_at = $env->updated_at;
-
+        if($env){
+            $this->access_token = $env->access_token;
+            $this->refresh_token = $env->refresh_token;
+            $this->expiration = $env->expiration;
+            $this->open_id = $env->open_id;
+            $this->user_id = $env->user_id;
+            $this->updated_at = $env->updated_at;
+        }
     }
 
     public function yconnect(){

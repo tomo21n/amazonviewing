@@ -51,9 +51,14 @@ class Controller_Yahooapi extends Controller_Rest
 
             if($open_id){
                 $env = Model_Yauctiontoken::getAccessToken($open_id);
-                $yauction->setTokenFromDb($env);
+                if(!$env){
 
-                $result = $yauction->myCloseList();
+                    return array('ERROR'=>'Open Id を正しく設定して下さい。');
+
+                }else{
+                    $yauction->setTokenFromDb($env);
+                    $result = $yauction->myCloseList();
+                }
                 if($result === 'Invalid Token'){
                     $yauction->refreshToken();
 
@@ -123,9 +128,14 @@ class Controller_Yahooapi extends Controller_Rest
 
             if($open_id){
                 $env = Model_Yauctiontoken::getAccessToken($open_id);
-                $yauction->setTokenFromDb($env);
+                if(!$env){
 
-                $result = $yauction->myWonList();
+                    return array('ERROR'=>'Open Id を正しく設定して下さい。');
+
+                }else{
+                    $yauction->setTokenFromDb($env);
+                    $result = $yauction->myWonList();
+                }
                 if($result === 'Invalid Token'){
                     $yauction->refreshToken();
 
