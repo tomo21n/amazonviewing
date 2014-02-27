@@ -1,7 +1,8 @@
 <?php
-class Model_Yauctionwon extends \Orm\Model
+namespace Yahoo;
+class Model_Yauctionsell extends \Orm\Model
 {
-    protected static $_table_name = 'yauction_won';
+    protected static $_table_name = 'yauction_sell';
 
     protected static $_properties = array(
 		'id',
@@ -9,9 +10,9 @@ class Model_Yauctionwon extends \Orm\Model
 		'open_id',
 		'auction_id',
 		'title',
-		'won_price',
-		'seller_id',
-		'seller_contact_url',
+		'highest_price',
+		'winner_id',
+		'winner_contact_url',
 		'message_title',
 		'end_time',
 		'auction_item_url',
@@ -33,7 +34,7 @@ class Model_Yauctionwon extends \Orm\Model
 
     public static function validate($factory)
     {
-        $val = Validation::forge($factory);
+        $val = \Validation::forge($factory);
         $val->add_field('user_id', 'User Id', 'required|max_length[20]');
         $val->add_field('auction_id', 'Auction Id', 'required|max_length[20]');
 
@@ -45,7 +46,7 @@ class Model_Yauctionwon extends \Orm\Model
      */
     protected static $_has_one = array(
         'yauctiontoken' => array(
-            'model_to' => 'Model_Yauctiontoken',
+            'model_to' => 'Yahoo\Model_Yauctiontoken',
             'key_from' => 'open_id',
             'key_to' => 'open_id',
             'cascade_save' => false,

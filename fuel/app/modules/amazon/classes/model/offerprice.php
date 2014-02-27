@@ -1,4 +1,5 @@
 <?php
+namespace Amazon;
 class Model_Offerprice extends \Orm\Model
 {
     protected static $_table_name = 'offerprices';

@@ -1,6 +1,6 @@
 <h2>Listing MyAuction</h2>
 <br>
-<?php echo Form::open(array('action'=>'user/myauction/','class'=>'form-horizontal','method'=>'get')); ?>
+<?php echo Form::open(array('action'=>'yahoo/myauction/','class'=>'form-horizontal','method'=>'get')); ?>
 <fieldset>
     <!-- Open Id -->
     <div class="form-group">

@@ -1,4 +1,5 @@
 <?php
+namespace Yahoo;
 /**
  * YahooAuctionAPI Class
  */
@@ -25,9 +26,11 @@ class Yauction{
         $this->client_id     = "dj0zaiZpPUZLTFlOR2tOVGJjcCZzPWNvbnN1bWVyc2VjcmV0Jng9NTg-";
         $this->client_secret = "020f106d95756fd10ba6001ccbabc1cee2790c5e";
         // リクエストとコールバック間の検証用のランダムな文字列を指定してください
-        $this->state = "44Oq44Ki5YWF44Gr5L+644Gv44Gq44KL77yB";
+        //$this->state = "44Oq44Ki5YWF44Gr5L+644Gv44Gq44KL77yB";
+        $this->state = "4d5uyouyh8j909ik09ybf6d790uj09i0b77y";
         // リプレイアタック対策のランダムな文字列を指定してください
-        $this->nonce = "5YOV44Go5aWR57SE44GX44GmSUTljqjjgavjgarjgaPjgabjgog=";
+        //$this->nonce = "5YOV44Go5aWR57SE44GX44GmSUTljqjjgavjgarjgaPjgabjgog=";
+        $this->nonce = "werdurtdiytfvoub85697x7e5d98iok745so7h788h89jpioj4vh=";
 
     }
 
@@ -66,22 +69,22 @@ class Yauction{
         // 各パラメータ初期化
         //$redirect_uri = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
 
-        $response_type = OAuth2ResponseType::CODE_IDTOKEN;
+        $response_type = \OAuth2ResponseType::CODE_IDTOKEN;
         $scope = array(
-            OIDConnectScope::OPENID,
-            OIDConnectScope::PROFILE,
-            OIDConnectScope::EMAIL,
-            OIDConnectScope::ADDRESS
+            \OIDConnectScope::OPENID,
+            \OIDConnectScope::PROFILE,
+            \OIDConnectScope::EMAIL,
+            \OIDConnectScope::ADDRESS
         );
-        $display = OIDConnectDisplay::DEFAULT_DISPLAY;
+        $display = \OIDConnectDisplay::DEFAULT_DISPLAY;
         $prompt = array(
-            OIDConnectPrompt::DEFAULT_PROMPT
+            \OIDConnectPrompt::DEFAULT_PROMPT
         );
 
         // クレデンシャルインスタンス生成
-        $cred = new ClientCredential( $this->client_id, $this->client_secret );
+        $cred = new \ClientCredential( $this->client_id, $this->client_secret );
         // YConnectクライアントインスタンス生成
-        $client = new YConnectClient( $cred );
+        $client = new \YConnectClient( $cred );
 
         // デバッグ用ログ出力
         $client->enableDebugMode();
@@ -156,7 +159,7 @@ class Yauction{
                     };
 
 
-                } catch ( OAuth2TokenException $te ) {
+                } catch ( \OAuth2TokenException $te ) {
 
                     // リフレッシュトークンが有効期限切れであるかチェック
                     if( $te->invalidGrant() ) {
@@ -194,89 +197,6 @@ class Yauction{
         }
 
     }
-
-    public function openWatchList(){
-
-        $url = 'https://auctions.yahooapis.jp/AuctionWebService/V2/openWatchList';
-        $curl = \Request::forge($url, 'curl');
-        $param['start'] = '1';
-        $param['output'] = 'php';
-        try{
-            $curl->set_params($param);
-            $curl->set_header('Authorization', 'Bearer '.$this->access_token);
-            $curl->execute();
-            $response = $curl->response();
-
-            $result = unserialize($response->body);
-            echo '<pre>';
-            var_dump($result['ResultSet']);
-            echo '</pre>';
-
-
-            if($result['ResultSet']['totalResultsReturned'] > 0){
-
-                foreach($result['ResultSet']['Result'] as $item){
-                    $dbitem = Model_Yauctionsell::find('first', array(
-                        'where' => array(
-                            array('open_id', $this->open_id),
-                            array('auction_id', $item['AuctionID']),
-                        ),
-                    ));
-                    if(count($dbitem) > 0){
-                        $dbitem->auction_id = $item['AuctionID'];
-                        $dbitem->title = $item['Title'];
-
-                        if ($dbitem->save())
-                        {
-                            Session::set_flash('success', e('Updated yauctionsell #' . $dbitem->auction_id));
-                        }
-
-                        else
-                        {
-                            Session::set_flash('error', e('Could not update inventory #'));
-                            Response::redirect('user/myauction/');
-
-                        }
-
-                    }else{
-                        $yauctionsell = Model_Yauctionsell::forge(array(
-                            'user_id' => $this->user_id,
-                            'open_id' => $this->open_id,
-                            'auction_id' => $item['AuctionID'],
-                            'title' => $item['Title'],
-                        ));
-
-
-                        if ($yauctionsell and $yauctionsell->save()) {
-                            Session::set_flash('success', e('Added yauctionsell #' . $yauctionsell->auction_id . '.'));
-
-                        } else {
-                            Session::set_flash('error', e('Could not save inventory.'));
-                            Response::redirect('user/myauction/');
-
-                        }
-                    }
-
-                }
-
-            }else{
-                Session::set_flash('error', e('No Update.'));
-            }
-            Response::redirect('user/myauction/');
-
-        }catch (\Fuel\Core\HttpNotFoundException $e){
-            if(self::invalidToken($e->getMessage())){
-                return 'Invalid Token';
-            }else if(self::invalidRequest($e->getMessage())){
-                return 'Invalid Request';
-            }else{
-                return 'Other Error';
-            }
-
-        }
-    }
-
-
 
     public function myCloseList(){
 
@@ -388,6 +308,7 @@ class Yauction{
             //echo '<pre>';
             //var_dump($result);
             //echo '</pre>';
+            //return $result;
 
             if($result['ResultSet']['totalResultsReturned'] > 0){
 
@@ -472,9 +393,9 @@ class Yauction{
 
     public function refreshToken(){
         // クレデンシャルインスタンス生成
-        $cred = new ClientCredential( $this->client_id, $this->client_secret );
+        $cred = new \ClientCredential( $this->client_id, $this->client_secret );
         // YConnectクライアントインスタンス生成
-        $client = new YConnectClient( $cred );
+        $client = new \YConnectClient( $cred );
 
         try {
 
@@ -508,25 +429,6 @@ class Yauction{
         }
 
     }
-
-    public function validateAccessToken(){
-
-        $result = Model_Yauctiontoken::getAccessToken($this->user_id,$this->open_id);
-        echo '<pre>';
-        var_dump($result);
-        echo '</pre>';
-        $this->updated_at    = $result->updated_at;
-        $this->refresh_token = $result->refresh_token;
-        $this->access_token  = $result->access_token;
-        $this->expiration    = $result->expiration;
-
-        echo '<pre>';
-        var_dump($this);
-        echo '</pre>';
-
-    }
-
-
 
     /**
      * \brief 無効なアクセストークンエラー確認メソッド

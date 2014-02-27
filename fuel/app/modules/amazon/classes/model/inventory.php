@@ -1,4 +1,5 @@
 <?php
+namespace Amazon;
 class Model_Inventory extends \Orm\Model
 {
 	protected static $_properties = array(
@@ -44,14 +45,14 @@ class Model_Inventory extends \Orm\Model
      */
     protected static $_has_one = array(
         'salespart' => array(
-            'model_to' => 'Model_Salespart',
+            'model_to' => 'Amazon\Model_Salespart',
             'key_from' => 'part_id',
             'key_to' => 'part_id',
             'cascade_save' => false,
             'cascade_delete' => false
         ),
         'offerprice' => array(
-            'model_to' => 'Model_Offerprice',
+            'model_to' => 'Amazon\Model_Offerprice',
             'key_from' => 'part_id',
             'key_to' => 'part_id',
             'cascade_save' => false,

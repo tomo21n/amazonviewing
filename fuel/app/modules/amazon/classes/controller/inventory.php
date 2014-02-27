@@ -1,16 +1,17 @@
 <?php
-class Controller_User_Inventory extends Controller_User{
+namespace Amazon;
+class Controller_Inventory extends \Controller_User{
 
 	public function action_index()
 	{
         //$currency = \MyUtil::get_rate('US');
 
-        $user_info = Auth::get_user_id();
+        $user_info = \Auth::get_user_id();
         $where_array = array();
         //$where_array[] = array('inventories.user_id','=',$user_info[1]);
-        $ary_keyword = preg_split('/[\s]+/', mb_convert_kana(Input::get('word'), 's'), -1, PREG_SPLIT_NO_EMPTY);
-        if(Input::get('asin')){
-            $where_array[] = array('ASIN','=',Input::get('asin'));
+        $ary_keyword = preg_split('/[\s]+/', mb_convert_kana(\Input::get('word'), 's'), -1, PREG_SPLIT_NO_EMPTY);
+        if(\Input::get('asin')){
+            $where_array[] = array('ASIN','=',\Input::get('asin'));
         }
         foreach($ary_keyword as $keyword){
             $where_array[] = array('TITLE','like','%'.$keyword.'%');
@@ -31,7 +32,7 @@ class Controller_User_Inventory extends Controller_User{
             ),
         );
         $data['count'] = Model_Inventory::count($condition);
-        //$getsegment = '?word='. Input::get('word');
+        //$getsegment = '?word='. \Input::get('word');
         //Paginationの環境設定
         $config = array(
             'name' => 'default',
@@ -43,14 +44,14 @@ class Controller_User_Inventory extends Controller_User{
         );
 
         //Paginationのセット
-        $pagination = Pagination::forge('pagination', $config);
+        $pagination = \Pagination::forge('pagination', $config);
         $condition += array('limit' => $pagination->per_page);
         $condition += array('offset' => $pagination->offset);
         $data['inventories'] = Model_Inventory::find('all',$condition);
 
 
         $this->template->title = "在庫一覧";
-        $this->template->content = View::forge('user/inventory/index', $data);
+        $this->template->content = \View::forge('inventory/index', $data);
 	}
 
 	public function action_view($id = null)
@@ -58,23 +59,23 @@ class Controller_User_Inventory extends Controller_User{
 		$data['inventory'] = Model_Inventory::find($id);
 
 		$this->template->title = "Inventory";
-		$this->template->content = View::forge('user/inventory/view', $data);
+		$this->template->content = \View::forge('user/inventory/view', $data);
 
 	}
 
 	public function action_create()
     {
-        if (Input::method() == 'POST') {
+        if (\Input::method() == 'POST') {
             $val = Model_Inventory::validate('create');
 
             if ($val->run()) {
 
-                $salespart = Model_Salespart::find('first', array('where' => array(array('asin' => Input::post('asin')))));
+                $salespart = Model_Salespart::find('first', array('where' => array(array('asin' => \Input::post('asin')))));
 
                 if(count($salespart) == 0){
 
                     $salespart = Model_Salespart::forge(array(
-                        'asin' => Input::post('asin')
+                        'asin' => \Input::post('asin')
                     ));
 
                     if (!$salespart or !($salespart->save())) {
@@ -89,12 +90,12 @@ class Controller_User_Inventory extends Controller_User{
                 $inventory = Model_Inventory::forge(array(
                     'user_id' => MyUtil::get_myuserid(),
                     'part_id' => $salespart->part_id,
-                    'sku' => Input::post('sku'),
-                    'sale_qty' => Input::post('sale_qty'),
-                    'sale_price' => Input::post('sale_price'),
-                    'condition' => Input::post('condition'),
-                    'channel' => Input::post('channel'),
-                    'comment' => Input::post('comment'),
+                    'sku' => \Input::post('sku'),
+                    'sale_qty' => \Input::post('sale_qty'),
+                    'sale_price' => \Input::post('sale_price'),
+                    'condition' => \Input::post('condition'),
+                    'channel' => \Input::post('channel'),
+                    'comment' => \Input::post('comment'),
                 ));
 
 
@@ -112,7 +113,7 @@ class Controller_User_Inventory extends Controller_User{
         }
 
 		$this->template->title = "Inventories";
-		$this->template->content = View::forge('user/inventory/create');
+		$this->template->content = \View::forge('user/inventory/create');
 
 	}
 
@@ -123,12 +124,12 @@ class Controller_User_Inventory extends Controller_User{
 
 		if ($val->run())
 		{
-			$inventory->sku = Input::post('sku');
-			$inventory->sale_qty = Input::post('sale_qty');
-			$inventory->sale_price = Input::post('sale_price');
-			$inventory->condition = Input::post('condition');
-			$inventory->channel = Input::post('channel');
-			$inventory->comment = Input::post('comment');
+			$inventory->sku = \Input::post('sku');
+			$inventory->sale_qty = \Input::post('sale_qty');
+			$inventory->sale_price = \Input::post('sale_price');
+			$inventory->condition = \Input::post('condition');
+			$inventory->channel = \Input::post('channel');
+			$inventory->comment = \Input::post('comment');
 
 			if ($inventory->save())
 			{
@@ -145,7 +146,7 @@ class Controller_User_Inventory extends Controller_User{
 
 		else
 		{
-			if (Input::method() == 'POST')
+			if (\Input::method() == 'POST')
 			{
 				$inventory->sku = $val->validated('sku');
 				$inventory->sale_qty = $val->validated('sale_qty');
@@ -161,7 +162,7 @@ class Controller_User_Inventory extends Controller_User{
 		}
 
 		$this->template->title = "Inventories";
-		$this->template->content = View::forge('user/inventory/edit');
+		$this->template->content = \View::forge('user/inventory/edit');
 
 	}
 

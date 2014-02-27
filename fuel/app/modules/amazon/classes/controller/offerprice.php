@@ -1,5 +1,6 @@
 <?php
-class Controller_User_Offerprice extends Controller_User{
+namespace Amazon;
+class Controller_Offerprice extends Controller_User{
 
 	public function action_index()
 	{

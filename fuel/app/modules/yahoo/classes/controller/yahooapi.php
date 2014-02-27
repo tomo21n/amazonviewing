@@ -1,17 +1,18 @@
 <?php
-class Controller_Yahooapi extends Controller_Rest
+namespace Yahoo;
+class Controller_Yahooapi extends \Controller_Rest
 {
 
     public function before(){
 
         parent::before();
 
-        if (Input::method() == 'POST') {
+        if (\Input::method() == 'POST') {
 
-            if ($user = Auth::validate_user(Input::post('email'), Input::post('password')))
+            if ($user = \Auth::validate_user(\Input::post('email'), \Input::post('password')))
             {
 
-                if ( Auth::member(1) )
+                if ( \Auth::member(1) )
                 {
                     //禁止ユーザ
                     $username = false;
@@ -43,10 +44,10 @@ class Controller_Yahooapi extends Controller_Rest
 
         if($errormsg === true){
 
-            $open_id = Input::post('open_id');
+            $open_id = \Input::post('open_id');
 
             $yauction = new Yauction();
-            $yauction->setRequestUri(Uri::base().'user/myauction/index');
+            $yauction->setRequestUri(\Uri::base().'yahoo/myauction/index');
 
 
             if($open_id){
@@ -115,15 +116,16 @@ class Controller_Yahooapi extends Controller_Rest
 
     public function post_myWonList()
     {
+
         $errormsg = self::before();
 
 
         if($errormsg === true){
 
-            $open_id = Input::post('open_id');
+            $open_id = \Input::post('open_id');
 
             $yauction = new Yauction();
-            $yauction->setRequestUri(Uri::base().'user/myauction/index');
+            $yauction->setRequestUri(\Uri::base().'yahoo/myauction/index');
 
 
             if($open_id){

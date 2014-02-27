@@ -17,7 +17,7 @@
             <td><?php echo $item->open_id; ?></td>
             <td><?php echo $item->updated_at; ?></td>
             <td>
-                <?php echo Html::anchor('user/myauction/editaccesstoken/'.$item->id, 'Edit'); ?>
+                <?php echo Html::anchor('yahoo/myauction/editaccesstoken/'.$item->id, 'Edit'); ?>
             </td>
         </tr>
         <?php endforeach; ?>	</tbody>
@@ -27,7 +27,7 @@
     <p>No My Yahoo Account.</p>
 
 <?php endif; ?><p>
-    <?php echo Html::anchor('user/myauction/yconnect', 'AddYahooAccout', array('class' => 'btn btn-success')); ?>
+    <?php echo Html::anchor('yahoo/myauction/yconnect', 'AddYahooAccout', array('class' => 'btn btn-success')); ?>
 </p>
 
-<?php echo Html::anchor('user/myauction', 'Back'); ?>
+<?php echo Html::anchor('myauction', 'Back'); ?>

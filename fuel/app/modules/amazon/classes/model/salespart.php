@@ -1,4 +1,5 @@
 <?php
+namespace Amazon;
 class Model_Salespart extends \Orm\Model
 {
 	protected static $_properties = array(

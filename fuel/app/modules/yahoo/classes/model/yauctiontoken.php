@@ -1,4 +1,5 @@
 <?php
+namespace Yahoo;
 class Model_Yauctiontoken extends \Orm\Model
 {
     protected static $_table_name = 'yauction_token';
@@ -112,7 +113,7 @@ class Model_Yauctiontoken extends \Orm\Model
 
     public static function validate($factory)
     {
-        $val = Validation::forge($factory);
+        $val = \Validation::forge($factory);
         $val->add_field('yahoo_user_id', 'Yahoo User Id', 'max_length[255]');
 
         return $val;

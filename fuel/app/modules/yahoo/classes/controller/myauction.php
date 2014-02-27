@@ -1,15 +1,16 @@
 <?php
-class Controller_User_Myauction extends Controller_User{
+namespace Yahoo;
+class Controller_Myauction extends \Controller_User{
 
 	public function action_index()
 	{
-        if(Input::get('update')){
-            Response::redirect('user/myauction/updatelist/'.Input::get('open_id'));
+        if(\Input::get('update')){
+            \Response::redirect('yahoo/myauction/updatelist/'.\Input::get('open_id'));
         }else{
-            $user_info = Auth::get_user_id();
+            $user_info = \Auth::get_user_id();
             $where_array = array();
-            if(Input::get('open_id')){
-                $where_array[] = array('open_id','=',Input::get('open_id'));
+            if(\Input::get('open_id')){
+                $where_array[] = array('open_id','=',\Input::get('open_id'));
             }
 
             $condition = array(
@@ -23,11 +24,11 @@ class Controller_User_Myauction extends Controller_User{
                 ),
             );
             $data['count'] = Model_Yauctionsell::count($condition);
-            //$getsegment = '?word='. Input::get('word');
+            //$getsegment = '?word='. \Input::get('word');
             //Paginationの環境設定
             $config = array(
                 'name' => 'default',
-                'pagination_url' => ('user/myauction/index') ,
+                'pagination_url' => ('myauction/index') ,
                 'uri_segment' => 4,
                 'num_links' => 5,
                 'per_page' => 50,
@@ -35,7 +36,7 @@ class Controller_User_Myauction extends Controller_User{
             );
 
             //Paginationのセット
-            $pagination = Pagination::forge('pagination', $config);
+            $pagination = \Pagination::forge('pagination', $config);
             $condition += array('limit' => $pagination->per_page);
             $condition += array('offset' => $pagination->offset);
             $data['myauctions'] = Model_Yauctionsell::find('all',$condition);
@@ -52,14 +53,14 @@ class Controller_User_Myauction extends Controller_User{
             $data['open_ids'] = $open_ids;
 
             $this->template->title = "My Auction";
-            $this->template->content = View::forge('user/myauction/index', $data);
+            $this->template->content = \View::forge('myauction/index', $data);
         }
 
 	}
     public function action_updatelist($open_id = null){
 
         $yauction = new Yauction();
-        $yauction->setRequestUri(Uri::base().'user/myauction/index');
+        $yauction->setRequestUri(\Uri::base().'yahoo/myauction/index');
 
         if($open_id){
             $env = Model_Yauctiontoken::getAccessToken($open_id);
@@ -75,14 +76,14 @@ class Controller_User_Myauction extends Controller_User{
                 $result = $yauction->myCloseList();
 
             }else if($result === 'Invalid Request'||$result === 'Other Error'){
-                Session::set_flash('error', e('Error :' . $result));
+                \Session::set_flash('error', e('Error :' . $result));
 
             }else if($result){
-                Session::set_flash('success', e('Updated myauction '));
+                \Session::set_flash('success', e('Updated myauction '));
 
             }
 
-            Response::redirect('user/myauction/');
+            \Response::redirect('yahoo/myauction/');
 
         }
 
@@ -90,7 +91,7 @@ class Controller_User_Myauction extends Controller_User{
 
     public function action_accesstokenlist(){
 
-        $user_info = Auth::get_user_id();
+        $user_info = \Auth::get_user_id();
 
         $access_tokens = Model_Yauctiontoken::find('all',array(
             'where'=>array(
@@ -101,7 +102,7 @@ class Controller_User_Myauction extends Controller_User{
         $data['access_token'] = $access_tokens;
 
         $this->template->title = "myauction";
-        $this->template->content = View::forge('user/myauction/access_token', $data);
+        $this->template->content = \View::forge('myauction/access_token', $data);
 
     }
 
@@ -112,54 +113,54 @@ class Controller_User_Myauction extends Controller_User{
 
         if ($val->run())
         {
-            $myaccesstoken->yahoo_user_id = Input::post('yahoo_user_id');
+            $myaccesstoken->yahoo_user_id = \Input::post('yahoo_user_id');
 
 
             if ($myaccesstoken->save())
             {
-                Session::set_flash('success', e('Updated myauction #' . $id));
+                \Session::set_flash('success', e('Updated myauction #' . $id));
 
-                Response::redirect('user/myauction/accesstokenlist');
+                \Response::redirect('yahoo/myauction/accesstokenlist');
             }
 
             else
             {
-                Session::set_flash('error', e('Could not update myauction #' . $id));
+                \Session::set_flash('error', e('Could not update myauction #' . $id));
             }
         }
 
         else
         {
-            if (Input::method() == 'POST')
+            if (\Input::method() == 'POST')
             {
                 $myaccesstoken->yahoo_user_id = $val->validated('yahoo_user_id');
 
-                Session::set_flash('error', $val->error());
+                \Session::set_flash('error', $val->error());
             }
 
             $this->template->set_global('myaccesstoken', $myaccesstoken, false);
         }
 
         $this->template->title = "my access token";
-        $this->template->content = View::forge('user/myauction/editaccesstoken');
+        $this->template->content = \View::forge('myauction/editaccesstoken');
 
     }
 
     public function action_yconnect(){
 
-        $user_info = Auth::get_user_id();
+        $user_info = \Auth::get_user_id();
 
         $yauction = new Yauction();
-        $yauction->setRequestUri(Uri::current());
+        $yauction->setRequestUri(\Uri::current());
         $yauction->setUserId($user_info[1]);
         if($yauction->yconnect()){
 
-            Session::set_flash('success', e('アクセストークンを獲得しました'));
-            Response::redirect('user/myauction/accesstokenlist');
+            \Session::set_flash('success', e('アクセストークンを獲得しました'));
+            \Response::redirect('yahoo/myauction/accesstokenlist');
 
         }else{
-            Session::set_flash('error', e('アクセストークンを獲得できませんでした'));
-            Response::redirect('user/myauction/accesstokenlist');
+            \Session::set_flash('error', e('アクセストークンを獲得できませんでした'));
+            \Response::redirect('yahoo/myauction/accesstokenlist');
         }
 
     }
@@ -169,18 +170,18 @@ class Controller_User_Myauction extends Controller_User{
         $yauction->setOpenId($open_id);
         if($yauction->refreshToken()){
 
-            Session::set_flash('success', e('アクセストークンを獲得しました'));
-            Response::redirect('user/myauction/accesstokenlist');
+            \Session::set_flash('success', e('アクセストークンを獲得しました'));
+            \Response::redirect('yahoo/myauction/accesstokenlist');
 
         }else{
-            Session::set_flash('error', e('アクセストークンを獲得できませんでした'));
-            Response::redirect('user/myauction/accesstokenlist');
+            \Session::set_flash('error', e('アクセストークンを獲得できませんでした'));
+            \Response::redirect('myauction/accesstokenlist');
         }
 
     }
 
     public function validatea(){
-        $user_info = Auth::get_user_id();
+        $user_info = \Auth::get_user_id();
 
         $yauction = new Yauction();
         $yauction->setUserId($user_info[1]);
@@ -192,51 +193,51 @@ class Controller_User_Myauction extends Controller_User{
 		$data['myauction'] = Model_Yauctionsell::find($id);
 
 		$this->template->title = "myauction";
-		$this->template->content = View::forge('user/myauction/view', $data);
+		$this->template->content = \View::forge('myauction/view', $data);
 
 	}
 
 	public function action_create()
 	{
-		if (Input::method() == 'POST')
+		if (\Input::method() == 'POST')
 		{
 			$val = Model_Yauctionsell::validate('create');
 
 			if ($val->run())
 			{
 				$myauction = Model_Yauctionsell::forge(array(
-                    'user_id' => Input::post('user_id'),
-                    'auction_id' => Input::post('auction_id'),
-                    'title' => Input::post('title'),
-                    'highest_price'=> Input::post('highest_price'),
-                    'winner_id'=> Input::post('winner_id'),
-                    'item_list_url'=> Input::post('item_list_url'),
-                    'message_title'=> Input::post('message_title'),
-                    'end_time'=> Input::post('end_time'),
-                    'auction_item_url'=> Input::post('auction_item_url'),
-                    'image_url'=> Input::post('image_url'),
+                    'user_id' => \Input::post('user_id'),
+                    'auction_id' => \Input::post('auction_id'),
+                    'title' => \Input::post('title'),
+                    'highest_price'=> \Input::post('highest_price'),
+                    'winner_id'=> \Input::post('winner_id'),
+                    'item_list_url'=> \Input::post('item_list_url'),
+                    'message_title'=> \Input::post('message_title'),
+                    'end_time'=> \Input::post('end_time'),
+                    'auction_item_url'=> \Input::post('auction_item_url'),
+                    'image_url'=> \Input::post('image_url'),
 				));
 
 				if ($myauction and $myauction->save())
 				{
-					Session::set_flash('success', e('Added myauction #'.$myauction->id.'.'));
+					\Session::set_flash('success', e('Added myauction #'.$myauction->id.'.'));
 
-					Response::redirect('user/myauction');
+					\Response::redirect('myauction');
 				}
 
 				else
 				{
-					Session::set_flash('error', e('Could not save myauction.'));
+					\Session::set_flash('error', e('Could not save myauction.'));
 				}
 			}
 			else
 			{
-				Session::set_flash('error', $val->error());
+				\Session::set_flash('error', $val->error());
 			}
 		}
 
 		$this->template->title = "myauctions";
-		$this->template->content = View::forge('user/myauction/create');
+		$this->template->content = \View::forge('myauction/create');
 
 	}
 
@@ -247,33 +248,33 @@ class Controller_User_Myauction extends Controller_User{
 
 		if ($val->run())
 		{
-            $myauction->user_id = Input::post('user_id');
-            $myauction->auction_id = Input::post('auction_id');
-            $myauction->title = Input::post('title');
-            $myauction->highest_price= Input::post('highest_price');
-            $myauction->winner_id= Input::post('winner_id');
-            $myauction->item_list_url= Input::post('item_list_url');
-            $myauction->message_title= Input::post('message_title');
-            $myauction->end_time= Input::post('end_time');
-            $myauction->auction_item_url= Input::post('auction_item_url');
-            $myauction->image_url= Input::post('image_url');
+            $myauction->user_id = \Input::post('user_id');
+            $myauction->auction_id = \Input::post('auction_id');
+            $myauction->title = \Input::post('title');
+            $myauction->highest_price= \Input::post('highest_price');
+            $myauction->winner_id= \Input::post('winner_id');
+            $myauction->item_list_url= \Input::post('item_list_url');
+            $myauction->message_title= \Input::post('message_title');
+            $myauction->end_time= \Input::post('end_time');
+            $myauction->auction_item_url= \Input::post('auction_item_url');
+            $myauction->image_url= \Input::post('image_url');
 
 			if ($myauction->save())
 			{
-				Session::set_flash('success', e('Updated myauction #' . $id));
+				\Session::set_flash('success', e('Updated myauction #' . $id));
 
-				Response::redirect('user/myauction');
+				\Response::redirect('yahoo/myauction');
 			}
 
 			else
 			{
-				Session::set_flash('error', e('Could not update myauction #' . $id));
+				\Session::set_flash('error', e('Could not update myauction #' . $id));
 			}
 		}
 
 		else
 		{
-			if (Input::method() == 'POST')
+			if (\Input::method() == 'POST')
 			{
                 $myauction->user_id = $val->validated('user_id');
                 $myauction->auction_id = $val->validated('auction_id');
@@ -286,14 +287,14 @@ class Controller_User_Myauction extends Controller_User{
                 $myauction->auction_item_url= $val->validated('auction_item_url');
                 $myauction->image_url= $val->validated('image_url');
 
-				Session::set_flash('error', $val->error());
+				\Session::set_flash('error', $val->error());
 			}
 
 			$this->template->set_global('myauction', $myauction, false);
 		}
 
 		$this->template->title = "myauctions";
-		$this->template->content = View::forge('user/myauction/edit');
+		$this->template->content = \View::forge('myauction/edit');
 
 	}
 
@@ -303,15 +304,15 @@ class Controller_User_Myauction extends Controller_User{
 		{
 			$myauction->delete();
 
-			Session::set_flash('success', e('Deleted myauction #'.$id));
+			\Session::set_flash('success', e('Deleted myauction #'.$id));
 		}
 
 		else
 		{
-			Session::set_flash('error', e('Could not delete myauction #'.$id));
+			\Session::set_flash('error', e('Could not delete myauction #'.$id));
 		}
 
-		Response::redirect('user/myauction');
+		\Response::redirect('yahoo/myauction');
 
 	}
 
