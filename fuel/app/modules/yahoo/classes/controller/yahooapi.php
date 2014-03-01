@@ -74,12 +74,14 @@ class Controller_Yahooapi extends \Controller_Rest
 
             if($result !== 'Invalid Request'||$result !== 'Other Error'){
 
+                $yauctioncount = Model_Yauctionsell::query()->where('open_id', $open_id)->count();
                 $yauctionsell = Model_Yauctionsell::find('all',array(
                     'where'=> array(
                         array( 'open_id', '=', $open_id )
                     ),'order_by' => array(
                         array('end_time' ,'asc')
                     ),'limit' => 50
+                     , 'offset' => $yauctioncount > 50 ?$yauctioncount-50 : 0
                 ));
 
                 $resultarray = array();
@@ -151,12 +153,14 @@ class Controller_Yahooapi extends \Controller_Rest
 
             if($result !== 'Invalid Request'||$result !== 'Other Error'){
 
+                $yauctioncount = Model_Yauctionwon::query()->where('open_id', $open_id)->count();
                 $yauctionwon = Model_Yauctionwon::find('all',array(
                     'where'=> array(
                         array( 'open_id', '=', $open_id )
                     ),'order_by' => array(
                         array('end_time' ,'asc')
                     ),'limit' => 50
+                    , 'offset' => $yauctioncount > 50 ?$yauctioncount-50 : 0
                 ));
 
                 $resultarray = array();
