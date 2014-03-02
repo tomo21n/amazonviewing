@@ -6,7 +6,7 @@
 return array(
 	'default' => array(
 		'connection'  => array(
-			'dsn'        => 'mysql:host=localhost;dbname=amazonviewing',
+            'dsn'        => 'mysql:host=worldviewinstance.cxhcuepwy9ai.ap-northeast-1.rds.amazonaws.com;dbname=dev_amazonviewing',
 			'username'   => 'root',
 			'password'   => '',
 		),

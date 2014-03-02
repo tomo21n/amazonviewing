@@ -1,4 +1,5 @@
 <?php
+namespace Amazon;
 /**
  * User: tomoki
  * Date: 2013/10/06

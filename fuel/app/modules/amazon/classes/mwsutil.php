@@ -1,4 +1,5 @@
 <?php
+namespace Amazon;
 /**
  * AmazonのMWSの
  *
@@ -29,15 +30,15 @@ class Mwsutil {
 
         switch($request_type){
             case 'GetLowestOfferListingsForASINRequest':
-                require_once( PKGPATH .'mws/MarketplaceWebServiceProducts/Client.php');
-                require_once( PKGPATH .'mws/MarketplaceWebServiceProducts/Model/ASINListType.php');
-                require_once( PKGPATH .'mws/MarketplaceWebServiceProducts/Model/GetLowestOfferListingsForASINRequest.php');
+                require_once(PKGPATH . 'mws/MarketplaceWebServiceProducts/Client.php');
+                require_once(PKGPATH . 'mws/MarketplaceWebServiceProducts/Model/ASINListType.php');
+                require_once(PKGPATH . 'mws/MarketplaceWebServiceProducts/Model/GetLowestOfferListingsForASINRequest.php');
                 break;
             case 'SubmitFeed':
                 set_include_path(PKGPATH .'mws/');
-                require_once( PKGPATH .'mws/MarketplaceWebService/Client.php');
-                require_once( PKGPATH .'mws/MarketplaceWebService/Model/SubmitFeedRequest.php');
-                require_once( PKGPATH .'mws/MarketplaceWebService/Model/IdList.php');
+                require_once(PKGPATH . 'mws/MarketplaceWebService/Client.php');
+                require_once(PKGPATH . 'mws/MarketplaceWebService/Model/SubmitFeedRequest.php');
+                require_once(PKGPATH . 'mws/MarketplaceWebService/Model/IdList.php');
             default :
                 break;
         }

@@ -6,15 +6,15 @@ class Controller_Account extends Controller_Base
 
     public function action_index()
     {
-        Response::redirect('account/create');
+        \Response::redirect('account/create');
 
     }
 
     public function action_create()
     {
-        if (Input::method() == 'POST')
+        if (\Input::method() == 'POST')
         {
-            $val = Validation::forge('create');
+            $val = \Validation::forge('create');
             $val->add_field('nickname', '名前', 'required|max_length[50]');
             $val->add_field('password', 'パスワード', 'required|max_length[50]');
             $val->add('password_conf', 'パスワード再入力')
@@ -25,30 +25,30 @@ class Controller_Account extends Controller_Base
             if ($val->run()) {
                 try{
                     $user = \Auth::instance()->create_user(
-                        Input::post('email')      //username
-                        , Input::post('password') //password
-                        , Input::post('email')    //email
+                        \Input::post('email')      //username
+                        , \Input::post('password') //password
+                        , \Input::post('email')    //email
                         ,  3                      //group
                         ,array(
-                            'nickname' => Input::post('nickname'),
+                            'nickname' => \Input::post('nickname'),
                         )
                     );
 
                     if ($user)
                     {
-                        Session::set_flash('success', e('アカウントを作成しました。作成したアカウントでログインして下さい'));
-                        Response::redirect('user/login');
+                        \Session::set_flash('success', e('アカウントを作成しました。作成したアカウントでログインして下さい'));
+                        \Response::redirect('user/login');
                     }
 
                 }catch (\SimpleUserUpdateException $e) {
 
-                    Session::set_flash('error', e($e->getMessage()));
+                    \Session::set_flash('error', e($e->getMessage()));
 
                 }
 
             }else {
 
-                Session::set_flash('error', $val->error());
+                \Session::set_flash('error', $val->error());
 
             }
 

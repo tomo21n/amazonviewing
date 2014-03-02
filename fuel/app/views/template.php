@@ -56,24 +56,24 @@
                         <li class="dropdown <?php echo Uri::segment(2) == 'myinventory' ? 'active' : '' ?>">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">在庫<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><?php echo Html::anchor('user/inventory/', '在庫一覧') ?></li>
-                                <li><?php echo Html::anchor('user/inventory/create', '個別登録') ?></li>
-                                <li><?php echo Html::anchor('user/inventory/bulk', '一括アップロード') ?></li>
+                                <li><?php echo Html::anchor('amazon/inventory/', '在庫一覧') ?></li>
+                                <li><?php echo Html::anchor('amazon/inventory/create', '個別登録') ?></li>
+                                <li><?php echo Html::anchor('amazon/inventory/bulk', '一括アップロード') ?></li>
                             </ul>
                         </li>
                         <li class="dropdown <?php echo Uri::segment(2) == 'myauction' ? 'active' : '' ?>">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">ヤフオク<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><?php echo Html::anchor('user/myauction/accesstokenlist', 'アクセストークン') ?></li>
-                                <li><?php echo Html::anchor('user/myauction/', '出品一覧') ?></li>
+                                <li><?php echo Html::anchor('yahoo/myauction/accesstokenlist', 'アクセストークン') ?></li>
+                                <li><?php echo Html::anchor('yahoo/myauction/', '出品一覧') ?></li>
                             </ul>
                         </li>
 
                         <li class="dropdown <?php echo Uri::segment(2) == 'useraccount' ? 'active' : '' ?>">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">アカウント<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><?php echo Html::anchor('user/useraccount/edit', 'アカウント編集') ?></li>
-                                <li><?php echo Html::anchor('user/useraccount/changepassword', 'パスワード変更') ?></li>
+                                <li><?php echo Html::anchor('account/useraccount/edit', 'アカウント編集') ?></li>
+                                <li><?php echo Html::anchor('account/useraccount/changepassword', 'パスワード変更') ?></li>
                             </ul>
                         </li>
                     <?php endif; ?>

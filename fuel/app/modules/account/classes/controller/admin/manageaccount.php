@@ -1,16 +1,16 @@
 <?php
-class Controller_Admin_ManageAccount extends Controller_Admin
+class Controller_ManageAccount extends \Controller_Admin
 {
 
     public function action_index()
     {
 
         $where_array = array();
-        if(Input::get('email')){
-            $where_array[] = array('users.email','like','%'.Input::get('email').'%');
+        if(\Input::get('email')){
+            $where_array[] = array('users.email','like','%'.\Input::get('email').'%');
         }
 
-        $result_arr= DB::select(DB::expr('count(users.id) AS COUNT'))
+        $result_arr= \DB::select(\DB::expr('count(users.id) AS COUNT'))
                        ->from('users')
                        ->where($where_array)
                        ->execute()
@@ -32,11 +32,11 @@ class Controller_Admin_ManageAccount extends Controller_Admin
 
 EOF1;
 
-        if(Input::get('email')){
-            $query .= ' AND users.email like "%'.Input::get('email').'%"';
+        if(\Input::get('email')){
+            $query .= ' AND users.email like "%'.\Input::get('email').'%"';
         }
 
-        $getsegment = '?email='. Input::get('email');
+        $getsegment = '?email='. \Input::get('email');
         //Paginationの環境設定
         $config = array(
             'name' => 'default',
@@ -53,7 +53,7 @@ EOF1;
         $query .= " limit ".$pagination->per_page;
         $query .= " offset ".$pagination->offset;
         $data['accountlist']=
-              DB::query($query)->execute()->as_array();
+              \DB::query($query)->execute()->as_array();
 
         $this->template->title = "アカウント一覧";
         $this->template->content = View::forge('admin/manageaccount/index', $data);
@@ -80,44 +80,44 @@ EOF1;
          where users.id = metadata.id
     AND users.id = {$id}
 EOF1;
-        $account = DB::query($query)->execute()->current();
+        $account = \DB::query($query)->execute()->current();
 
-        $val = Validation::forge();
+        $val = \Validation::forge();
 
         $val->add('group_id', 'Group ID')->add_rule('required');
 
         if ($val->run())
         {
-            if($account['group_id'] <> Input::post('group_id')){
-                $account['group_id'] = Input::post('group_id');
-                $result = Auth::update_user(
+            if($account['group_id'] <> \Input::post('group_id')){
+                $account['group_id'] = \Input::post('group_id');
+                $result = \Auth::update_user(
                     array(
-                        'group_id'        => Input::post('group_id'),
+                        'group_id'        => \Input::post('group_id'),
                     )
                 ,$account['username']
                 );
 
                 if ($result)
                 {
-                    Session::set_flash('success', e('更新しました' ));
+                    \Session::set_flash('success', e('更新しました' ));
 
-                    //Response::redirect('admin/manageaccount/edit/'.$id);
+                    //\Response::redirect('admin/manageaccount/edit/'.$id);
                 }
 
                 else
                 {
-                    Session::set_flash('error', e('更新できませんでした'));
+                    \Session::set_flash('error', e('更新できませんでした'));
                 }
             }
         }
 
         else
         {
-            if (Input::method() == 'POST')
+            if (\Input::method() == 'POST')
             {
-                $account['group_id'] = Input::post('group_id');
+                $account['group_id'] = \Input::post('group_id');
 
-                Session::set_flash('error', $val->error());
+                \Session::set_flash('error', $val->error());
             }
 
             $this->template->set_global('item', $account, false);
@@ -132,24 +132,24 @@ EOF1;
 
     public function action_delete()
     {
-        if(Input::post('id')){
+        if(\Input::post('id')){
 
-            $id = Input::post('id');
+            $id = \Input::post('id');
 
             if ($account = \Model\Auth_User::find($id))
             {
-                Auth::delete_user($account->username);
-                Session::set_flash('success', e('削除しました #'.$id));
+                \Auth::delete_user($account->username);
+                \Session::set_flash('success', e('削除しました #'.$id));
             }
 
             else
             {
-                Session::set_flash('error', e('削除できませんでした #'.$id));
+                \Session::set_flash('error', e('削除できませんでした #'.$id));
             }
 
         }
 
-        Response::redirect('admin/manageaccount/');
+        \Response::redirect('admin/manageaccount/');
 
     }
 
@@ -157,11 +157,11 @@ EOF1;
     public function action_passwordreset()
     {
 
-        if(Input::post('email')){
+        if(\Input::post('email')){
             $new_password = null;
 
             // 現在のユーザーのパスワードをリセット
-            $new_password = Auth::reset_password(Input::post('email'));
+            $new_password = \Auth::reset_password(\Input::post('email'));
 
             if ($new_password) {
 
@@ -184,7 +184,7 @@ EOF1;
 
                 $email = \Email::forge('jis');
                 $email->from('info@matrixneo.com', 'MatrixNeo');
-                $email->to(Input::post('email'));
+                $email->to(\Input::post('email'));
                 $email->subject('【MatrixNeo】パスワードリセット');
                 $email->body($body);
 
@@ -199,15 +199,15 @@ EOF1;
                 }
             }
 
-            Session::set_flash('success', e('パスワードをリセットし、対象ユーザにメールを送信しました。 '));
+            \Session::set_flash('success', e('パスワードをリセットし、対象ユーザにメールを送信しました。 '));
 
 
         }else{
 
-            Session::set_flash('error', e('パスワードをリセットできませんでした。'));
+            \Session::set_flash('error', e('パスワードをリセットできませんでした。'));
         }
 
-        Response::redirect('admin/manageaccount');
+        \Response::redirect('admin/manageaccount');
 
 
     }
